@@ -9,32 +9,59 @@ def start(stdscr):
     stdscr.addstr("Press any key to begin: ")
     stdscr.refresh()
     stdscr.getkey()  #waits for the user input to execute the program
-    test(stdscr)
+    
+def display_text(stdscr,sentence,user_text,wpm = 0):    #Used to overlap the existing text with the user input
+    stdscr.addstr(sentence)
 
+    for i, char in enumerate(user_text):
+        correct_char = sentence[i]
+        if (char == correct_char):
+            stdscr.addstr(0,i,char,curses.color_pair(1))
+        else:
+            stdscr.addstr(0,i,char,curses.color_pair(2))
+    
 def test(stdscr):
 
     # Open and read the file
     with open("sentence.txt", "r", encoding="utf-8") as file:
         sentence = [line.strip() for line in file if line.strip()]
-
+    stdscr.clear()
     # Pick a random sentence for typing test
     sentence = random.choice(sentence)
+    stdscr.addstr(sentence)
     user_text = []
     
 
-    while True:
-        stdscr.clear()
-        stdscr.addstr(sentence)
-        
-        
-        
+    """for  char in sentence:   #runs loop up until the length of the sentence
+        user_text = []
+        user_input = stdscr.getkey()
+        if user_input == char:
+            stdscr.addstr( 0,0,user_input,curses.color_pair(1))
+        else:
+            stdscr.addstr(0,0,user_input,curses.color_pair(2))
+        stdscr.refresh()
+        """
+       
 
-        for char in sentence:
-            stdscr.addstr(char,curses.color_pair(1))
+
+
+
+
+
+    while True:
+       
+        stdscr.clear()
+        display_text(stdscr,sentence,user_text)
         stdscr.refresh()
         key = stdscr.getkey()
         if ord(key)== 27:
             break
+
+        if key in("KEY_BACKSPACE",'\b',"\x7f"):
+            if len(user_text)>0:
+                user_text.pop()
+        else:
+            pass
         user_text.append(key)
             
 
@@ -44,9 +71,10 @@ def test(stdscr):
 def main(stdscr):
     #for text color
     curses.init_pair(1,curses.COLOR_GREEN,curses.COLOR_BLACK)
-    curses.init_pair(2,curses.COLOR_YELLOW,curses.COLOR_BLACK)
+    curses.init_pair(2,curses.COLOR_RED,curses.COLOR_BLACK)
     curses.init_pair(3,curses.COLOR_WHITE, curses.COLOR_BLACK)
     start(stdscr)
+    test(stdscr)
    
 
 wrapper(main)
