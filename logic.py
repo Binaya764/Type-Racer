@@ -9,6 +9,7 @@ def start(stdscr):
     stdscr.addstr("Press any key to begin: ")
     stdscr.refresh()
     stdscr.getkey()  #waits for the user input to execute the program
+    test(stdscr)
 
 def test(stdscr):
 
@@ -19,10 +20,26 @@ def test(stdscr):
     # Pick a random sentence for typing test
     sentence = random.choice(sentence)
     user_text = []
-    stdscr.clear()
-    stdscr.addstr(sentence)
-    stdscr.refresh()
-    stdscr.getkey()
+    
+
+    while True:
+        stdscr.clear()
+        stdscr.addstr(sentence)
+        
+        
+        
+
+        for char in sentence:
+            stdscr.addstr(char,curses.color_pair(1))
+        stdscr.refresh()
+        key = stdscr.getkey()
+        if ord(key)== 27:
+            break
+        user_text.append(key)
+            
+
+
+    
 
 def main(stdscr):
     #for text color
@@ -30,7 +47,6 @@ def main(stdscr):
     curses.init_pair(2,curses.COLOR_YELLOW,curses.COLOR_BLACK)
     curses.init_pair(3,curses.COLOR_WHITE, curses.COLOR_BLACK)
     start(stdscr)
-    test(stdscr)
-
+   
 
 wrapper(main)
