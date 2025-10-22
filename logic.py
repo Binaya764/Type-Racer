@@ -1,6 +1,7 @@
 import curses
 import random
 from curses import wrapper
+import time
 
 def start(stdscr):
     #includes commands for displaying the text in the terminal window
@@ -12,14 +13,14 @@ def start(stdscr):
     
 def display_text(stdscr,sentence,user_text,wpm = 0):    #Used to overlap the existing text with the user input
     stdscr.addstr(sentence)
-
+    wpm_text = f"wpm : {wpm}"
     for i, char in enumerate(user_text):
         correct_char = sentence[i]
         if (char == correct_char):
             stdscr.addstr(0,i,char,curses.color_pair(1))
         else:
             stdscr.addstr(0,i,char,curses.color_pair(2))
-    
+    stdscr.addstr(1,0,wpm_text)
 def test(stdscr):
 
     # Open and read the file
@@ -45,24 +46,30 @@ def test(stdscr):
 
 
 
-
+    start_time = time.time()
+    wpm = 0
 
 
     while True:
        
         stdscr.clear()
-        display_text(stdscr,sentence,user_text)
+        display_text(stdscr,sentence,user_text,wpm)
         stdscr.refresh()
         key = stdscr.getkey()
+
+        time_elapsed = max(time.time()-start_time,1) #calculate the time passed and returns 1 if zero
+        wpm = ((len(user_text)/time_elapsed/60)/5)   #calculates the word per minute 
+                                                    #considering word consist of 5 letter per word
+
         if ord(key)== 27:
             break
 
         if key in("KEY_BACKSPACE",'\b',"\x7f"):
             if len(user_text)>0:
                 user_text.pop()
-        else:
-            pass
-        user_text.append(key)
+        elif(len(user_text) < len(sentence)):
+            user_text.append(key)
+        
             
 
 
