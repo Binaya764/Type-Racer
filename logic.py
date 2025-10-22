@@ -1,4 +1,5 @@
 import curses
+#curses is a terminal handling library that let's you to create GUI terminal giving GUI like control
 import random
 from curses import wrapper
 import time
@@ -48,19 +49,27 @@ def test(stdscr):
 
     start_time = time.time()
     wpm = 0
+    stdscr.nodelay(True)
 
 
     while True:
-       
+        time_elapsed = max(time.time()-start_time,1) #calculate the time passed and returns 1 if zero
+        wpm = round((len(user_text)/(time_elapsed/60))/5)   #calculates the word per minute 
+                                                             #considering word consist of 5 letter per word
+
         stdscr.clear()
         display_text(stdscr,sentence,user_text,wpm)
         stdscr.refresh()
-        key = stdscr.getkey()
 
-        time_elapsed = max(time.time()-start_time,1) #calculate the time passed and returns 1 if zero
-        wpm = ((len(user_text)/time_elapsed/60)/5)   #calculates the word per minute 
-                                                    #considering word consist of 5 letter per word
+        if len(user_text) == len(sentence): #combines the parameter value with whatever in ""
+            stdscr.nodelay(False)
+            break
+        try:
+            key = stdscr.getkey()
+        except:
+            continue
 
+                                     
         if ord(key)== 27:
             break
 
@@ -83,5 +92,6 @@ def main(stdscr):
     start(stdscr)
     test(stdscr)
    
-
+    stdscr.addstr(2,0,"You completed! press any key to continue:")
+    stdscr.getkey()
 wrapper(main)
