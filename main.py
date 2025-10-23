@@ -15,13 +15,19 @@ def start(stdscr):
 def display_text(stdscr,sentence,user_text,wpm = 0):    #Used to overlap the existing text with the user input
     stdscr.addstr(sentence)
     wpm_text = f"wpm : {wpm}"
-    for i, char in enumerate(user_text):
-        correct_char = sentence[i]
-        if (char == correct_char):
-            stdscr.addstr(0,i,char,curses.color_pair(1))
+    
+        
+    for i, char in enumerate(sentence):
+        if(i< len(user_text)):
+            if (char == user_text[i]):
+                stdscr.addstr(0,i,char,curses.color_pair(1))
+            else:
+                stdscr.addstr(0,i,char,curses.color_pair(2))
         else:
-            stdscr.addstr(0,i,char,curses.color_pair(2))
+            stdscr.addstr(0,i,char,curses.color_pair(3))
+
     stdscr.addstr(1,0,wpm_text)
+    stdscr.refresh
 def test(stdscr):
 
     # Open and read the file
@@ -65,7 +71,8 @@ def test(stdscr):
             stdscr.nodelay(False)
             break
         try:
-            key = stdscr.getkey()
+            key = stdscr.getkey()   #handles error if the user does not type condition
+            
         except:
             continue
 
